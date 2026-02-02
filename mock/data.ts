@@ -120,3 +120,36 @@ export const MOCK_TICKETS: Ticket[] = [
         attachmentsCount: 0,
     }
 ];
+
+export const SLA_STATS = [
+    {
+        name: "Met",
+        count: 45,
+        color: "#10B981", // Success green
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 15
+    },
+    {
+        name: "Breached",
+        count: 5,
+        color: "#EF4444", // Danger red
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 15
+    },
+    {
+        name: "Warning",
+        count: 12,
+        color: "#F97316", // Warning orange
+        legendFontColor: "#7F7F7F",
+        legendFontSize: 15
+    }
+];
+
+export const WEEKLY_PERFORMANCE = {
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    datasets: [
+        {
+            data: [5, 8, 4, 12, 9, 3, 2] // Tickets resolved per day
+        }
+    ]
+};
