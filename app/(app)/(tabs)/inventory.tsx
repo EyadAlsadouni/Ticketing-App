@@ -1,0 +1,22 @@
+// app/(app)/(tabs)/inventory.tsx
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../../../shared/context/ThemeContext';
+
+export default function InventoryScreen() {
+    const { colors } = useTheme();
+
+    return (
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <Text style={{ color: colors.foreground }}>Inventory Module Coming Soon</Text>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
