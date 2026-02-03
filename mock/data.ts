@@ -9,147 +9,252 @@ const subtractDays = (days: number) => new Date(now.getTime() - days * 24 * 60 *
 export const MOCK_TICKETS: Ticket[] = [
     {
         id: 1,
-        ticketId: 'TKT-2024-001',
-        title: 'Server Rack Overheating in Data Center A',
-        description: 'The primary cooling unit in Row 4 has failed. Temperatures are rising above critical thresholds.',
+        ticketId: '2576',
+        title: 'Camera is broken',
+        type: 'TR',
+        description: 'Main entrance camera lens is cracked.',
         status: 'open',
+        approvalStatus: null,
         priority: 'critical',
-        siteName: 'Riyadh Main HQ',
+        siteName: 'AljabrGas station',
+        locationDetails: 'Petrol gas station 1',
         region: 'Riyadh',
         city: 'Riyadh',
-        createdAt: subtractDays(0),
+        createdAt: '2026-01-05T08:56:00Z',
         updatedAt: subtractDays(0),
-        assignee: { id: 101, name: 'Ahmed Al-Sayed' },
+        startDate: '2026-01-01T09:00:00Z',
+        delayDays: 0,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
         reporter: { id: 201, name: 'Mohammed Ali' },
-        projectName: 'Infrastructure Maintenance',
-        slaStatus: 'warning',
+        projectName: 'Security Systems',
+        slaStatus: 'met',
         commentsCount: 3,
         attachmentsCount: 1,
+        attachments: [
+            { id: 1, type: 'PNG', fileName: 'broken_camera_1.png', uploadedDate: '2026-01-05T09:12:00Z', fileSize: 'PNG' }
+        ],
+        dependencies: [
+            { id: 1, name: 'Permit Required', remarks: 'Checking with station manager', resolved: false }
+        ],
+        inventoryConsumed: [
+            { id: 1, name: 'Hikvision 4K Dome Camera', barcode: 'HK-9982', desc: 'Replacement Unit', quantity: 1, consumedDate: '2026-01-05T14:30:00Z' }
+        ],
+        dailyLogs: [
+            { id: 1, workDate: '2026-01-05T00:00:00Z', startTime: '09:00', endTime: '18:00', duration: '9 hrs', activity: 'WF', status: 'In Progress', remoteVisit: false, distance: '0 km', hotelStay: false }
+        ],
+        activities: [
+            { id: 1, type: 'TICKET_CREATED', user: 'Administrator', timestamp: '2026-01-05T08:56:00Z' }
+        ]
     },
     {
         id: 2,
-        ticketId: 'TKT-2024-002',
-        title: 'Network Switch Configuration Issue',
-        description: 'VLAN tagging is incorrect on the 3rd floor switch. Connecting devices are not getting IPs.',
-        status: 'inProgress',
+        ticketId: 'AMB-3011',
+        title: 'Network maintenance',
+        description: 'Routine maintenance check for the main switch.',
+        status: 'open',
+        approvalStatus: null,
         priority: 'high',
-        siteName: 'Jeddah Branch Office',
-        region: 'Makkah',
-        city: 'Jeddah',
-        createdAt: subtractDays(1),
-        updatedAt: subtractDays(0),
-        assignee: { id: 102, name: 'Sarah Khan' },
-        reporter: { id: 202, name: 'Omar Farooq' },
-        projectName: 'Network Upgrade',
-        slaStatus: 'met',
-        commentsCount: 5,
-        attachmentsCount: 0,
-    },
-    {
-        id: 3,
-        ticketId: 'TKT-2024-003',
-        title: 'CCTV Camera Offline',
-        description: 'Camera #4 at the main entrance details are not feeding to the NVR.',
-        status: 'pending',
-        priority: 'medium',
-        siteName: 'Dammam Warehouse',
-        region: 'Eastern Province',
-        city: 'Dammam',
-        createdAt: subtractDays(2),
-        updatedAt: subtractDays(1),
-        reporter: { id: 203, name: 'Fahad Al-Otaibi' },
-        projectName: 'Security Systems',
-        slaStatus: 'met',
-        commentsCount: 1,
-        attachmentsCount: 2,
-    },
-    {
-        id: 4,
-        ticketId: 'TKT-2024-004',
-        title: 'Biometric Scanner Malfunction',
-        description: 'Fingerprint scanner at the server room entrance is not recognizing authorized personnel.',
-        status: 'closed',
-        priority: 'high',
-        siteName: 'Riyadh Main HQ',
+        siteName: 'Hassani Building',
+        locationDetails: 'Hassani Building',
         region: 'Riyadh',
         city: 'Riyadh',
-        createdAt: subtractDays(5),
-        updatedAt: subtractDays(3),
-        assignee: { id: 101, name: 'Ahmed Al-Sayed' },
-        reporter: { id: 204, name: 'Khalid Al-Ghamdi' },
-        projectName: 'Security Systems',
-        slaStatus: 'met',
-        commentsCount: 8,
-        attachmentsCount: 1,
-    },
-    {
-        id: 5,
-        ticketId: 'TKT-2024-005',
-        title: 'Pending Spare Parts for HVAC',
-        description: 'Waiting for the replacement compressor to arrive from the vendor.',
-        status: 'suspended',
-        priority: 'medium',
-        siteName: 'Madinah Regional Office',
-        region: 'Madinah',
-        city: 'Madinah',
-        createdAt: subtractDays(4),
-        updatedAt: subtractDays(2),
-        assignee: { id: 103, name: 'Yousef Al-Harbi' },
-        reporter: { id: 205, name: 'Ibrahim Al-Zahrani' },
-        projectName: 'Facility Management',
-        slaStatus: 'breached',
-        commentsCount: 2,
-        attachmentsCount: 0,
-    },
-    {
-        id: 6,
-        ticketId: 'TKT-2024-006',
-        title: 'Printer Maintenance Required',
-        description: '3rd floor printer shows error code E-301. Needs roller replacement.',
-        status: 'open',
-        priority: 'low',
-        siteName: 'Al-Khobar Branch',
-        region: 'Eastern Province',
-        city: 'Al-Khobar',
-        createdAt: subtractDays(0),
-        updatedAt: subtractDays(0),
-        reporter: { id: 206, name: 'Noura Al-Saud' },
-        projectName: 'Office Support',
+        createdAt: '2026-01-20T10:00:00Z',
+        updatedAt: subtractDays(1),
+        delayDays: 0,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
+        reporter: { id: 202, name: 'Omar Farooq' },
+        projectName: 'Maintenance',
         slaStatus: 'met',
         commentsCount: 0,
         attachmentsCount: 0,
+        dependencies: [],
+        inventoryConsumed: [],
+        dailyLogs: [],
+        activities: [
+            { id: 1, type: 'TICKET_CREATED', user: 'Omar Farooq', timestamp: '2026-01-20T10:00:00Z' }
+        ]
+    },
+    {
+        id: 3,
+        ticketId: '2579',
+        title: 'Drive up network issue',
+        type: 'TR',
+        description: 'Network outage in sector 4. Site needs inspection.',
+        status: 'open',
+        approvalStatus: null,
+        priority: 'high',
+        siteName: 'Main road drive up alhassa',
+        locationDetails: 'Main road drive up alhassa',
+        region: 'Eastern Province',
+        city: 'Al-Hasa',
+        createdAt: '2026-01-04T09:48:00Z',
+        updatedAt: subtractDays(1),
+        delayDays: 0,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
+        reporter: { id: 203, name: 'Fahad Al-Otaibi' },
+        projectName: 'Network',
+        slaStatus: 'met',
+        commentsCount: 2,
+        attachmentsCount: 1,
+        attachments: [],
+        dependencies: [
+            { id: 1, name: 'Power Issue', remarks: 'global power shutdown', resolved: false },
+            { id: 2, name: 'Network Issue', remarks: 'No network available on site', resolved: false }
+        ],
+        inventoryConsumed: [
+            {
+                id: 1,
+                name: 'AC-DC Power, -25degC, 60degC, 90V, 290V, 12V/29.2',
+                barcode: '02131212',
+                desc: '122025-00814',
+                quantity: 1,
+                consumedDate: '2026-01-04T09:49:00Z'
+            },
+            {
+                id: 2,
+                name: 'Assembly Chassis, AR6300, AR6300, AR6300 integrated chassis, 2*SRU slot, 4*SIC slot, 2*WSIC slot, 4*XSIC slot, 2*power slot',
+                barcode: '02115640',
+                desc: '122025-00647',
+                quantity: 1,
+                consumedDate: '2026-01-04T14:14:00Z'
+            }
+        ],
+        dailyLogs: [],
+        activities: [
+            { id: 1, type: 'ASSIGNEE_CHANGED', from: 'Supervisor', to: 'Field Engineer', user: 'Supervisor', timestamp: '2026-01-04T14:14:00Z' },
+            { id: 2, type: 'ASSIGNEE_CHANGED', from: 'Field Engineer', to: 'Supervisor', user: 'Administrator', timestamp: '2026-01-04T11:59:00Z' },
+            { id: 3, type: 'STATUS_CHANGED', from: 'Suspended', to: 'Open', user: 'Administrator', timestamp: '2026-01-04T11:59:00Z' },
+            { id: 4, type: 'STATUS_CHANGED', from: 'Open', to: 'Suspended', user: 'Field Engineer', timestamp: '2026-01-04T10:50:00Z' },
+            { id: 5, type: 'STATUS_CHANGED', from: 'Suspended', to: 'Open', user: 'Administrator', timestamp: '2026-01-04T10:26:00Z' },
+            { id: 6, type: 'STATUS_CHANGED', from: 'Open', to: 'Suspended', user: 'Field Engineer', timestamp: '2026-01-04T09:49:00Z' },
+            { id: 7, type: 'TITLE_CHANGED', from: 'New', to: 'New ticket', user: 'Field Engineer', timestamp: '2026-01-04T09:48:00Z' },
+            { id: 8, type: 'ASSIGNEE_CHANGED', from: 'Supervisor', to: 'Field Engineer', user: 'Supervisor', timestamp: '2026-01-04T09:48:00Z' },
+            { id: 9, type: 'TITLE_ADDED', to: 'New', user: 'Supervisor', timestamp: '2026-01-04T09:48:00Z' }
+        ]
+    },
+    {
+        id: 4,
+        ticketId: '2586',
+        title: 'AC unit fix',
+        description: 'AC Unit malfunction in building B.',
+        status: 'suspended',
+        approvalStatus: null,
+        priority: 'medium',
+        siteName: 'Abwdbyl drive up',
+        locationDetails: 'Abwdbyl drive up',
+        region: 'Jeddah',
+        city: 'Jeddah',
+        createdAt: '2026-01-10T11:00:00Z',
+        updatedAt: subtractDays(2),
+        suspendedDate: '2026-01-15T15:00:00Z',
+        delayDays: 0,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
+        reporter: { id: 204, name: 'Khalid Al-Ghamdi' },
+        projectName: 'Facility',
+        slaStatus: 'breached',
+        commentsCount: 1,
+        attachmentsCount: 0,
+        dependencies: [
+            { id: 1, name: 'Permit Required', remarks: 'checking', resolved: true }
+        ],
+        inventoryConsumed: [],
+        dailyLogs: [],
+        activities: [
+            { id: 1, type: 'STATUS_CHANGED', from: 'Open', to: 'Suspended', user: 'Khalid Al-Ghamdi', timestamp: '2026-01-15T15:00:00Z' }
+        ]
+    },
+    {
+        id: 5,
+        ticketId: '2568',
+        title: 'camera is broken',
+        type: 'TR',
+        description: 'Replaced lens cover and adjusted focus.',
+        status: 'closed',
+        approvalStatus: 'approved',
+        priority: 'medium',
+        siteName: 'King abdulaziz street drive up',
+        locationDetails: 'King abdulaziz street drive up',
+        region: 'Riyadh',
+        city: 'Riyadh',
+        createdAt: '2025-11-20T08:00:00Z',
+        updatedAt: subtractDays(10),
+        completedDate: '2025-12-25T17:00:00Z',
+        delayDays: 2,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
+        reporter: { id: 201, name: 'Mohammed Ali' },
+        projectName: 'Security Systems',
+        slaStatus: 'met',
+        commentsCount: 5,
+        attachmentsCount: 3,
+        attachments: [
+            { id: 1, type: 'Status Closed', fileName: 'Ticketing-Logo.jpeg', uploadedDate: '2025-11-22T17:46:00Z', fileSize: 'JPEG' },
+            { id: 2, type: 'Status Closed', fileName: 'Ticketing-Logo.jpeg', uploadedDate: '2025-12-19T18:51:00Z', fileSize: 'JPEG' },
+            { id: 3, type: 'Status Closed', fileName: 'Ticketing-Logo.jpeg', uploadedDate: '2025-11-22T17:47:00Z', fileSize: 'JPEG' }
+        ],
+        inventoryConsumed: [
+            {
+                id: 1,
+                name: 'AC-DC Power, -25degC, 60degC, 90V, 290V, 12V/29.2',
+                barcode: '02131212',
+                desc: '122025-01905',
+                quantity: 1,
+                consumedDate: '2026-01-24T00:00:00Z'
+            },
+            {
+                id: 2,
+                name: 'Router AR502H 2*RS485',
+                barcode: '50010576',
+                desc: '122025-01966',
+                quantity: 1,
+                consumedDate: '2026-01-25T00:00:00Z'
+            }
+        ],
+        dailyLogs: [
+            { id: 1, workDate: '2026-01-24T00:00:00Z', startTime: '09:00', endTime: '17:00', duration: '8 hrs', activity: 'TR', status: 'Closed', remoteVisit: false, distance: 'No', hotelStay: false }
+        ],
+        activities: [
+            { id: 1, type: 'TICKET_CREATED', user: 'Administrator', timestamp: '2025-11-20T08:00:00Z' }
+        ],
+        dependencies: [
+            { id: 1, name: 'AC Not Working', remarks: 'aaa', resolved: true },
+            { id: 2, name: 'Permit Required', remarks: 'checking', resolved: true }
+        ]
+    },
+    {
+        id: 6,
+        ticketId: '2599',
+        title: 'Pending parts',
+        description: 'Waiting for spare fan component.',
+        status: 'closed',
+        approvalStatus: 'approved',
+        priority: 'low',
+        siteName: 'Hassani Building',
+        locationDetails: 'Hassani Building',
+        region: 'Riyadh',
+        city: 'Riyadh',
+        createdAt: subtractDays(12),
+        updatedAt: subtractDays(5),
+        completedDate: subtractDays(5),
+        delayDays: 0,
+        assignee: { id: 101, name: 'Ahmed Al-Sayed', role: 'Field Engineer' },
+        reporter: { id: 206, name: 'Noura Al-Saud' },
+        projectName: 'Maintenance',
+        slaStatus: 'met',
+        commentsCount: 0,
+        attachmentsCount: 0,
+        activities: [
+            { id: 1, type: 'TICKET_CREATED', user: 'Noura Al-Saud', timestamp: subtractDays(12) }
+        ]
     }
 ];
 
 export const SLA_STATS = [
-    {
-        name: "Met",
-        count: 45,
-        color: "#10B981", // Success green
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-    },
-    {
-        name: "Breached",
-        count: 5,
-        color: "#EF4444", // Danger red
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-    },
-    {
-        name: "Warning",
-        count: 12,
-        color: "#F97316", // Warning orange
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-    }
+    { name: "Met", count: 45, color: "#10B981", legendFontColor: "#7F7F7F", legendFontSize: 15 },
+    { name: "Breached", count: 5, color: "#EF4444", legendFontColor: "#7F7F7F", legendFontSize: 15 },
+    { name: "Warning", count: 12, color: "#F97316", legendFontColor: "#7F7F7F", legendFontSize: 15 }
 ];
 
 export const WEEKLY_PERFORMANCE = {
     labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    datasets: [
-        {
-            data: [5, 8, 4, 12, 9, 3, 2] // Tickets resolved per day
-        }
-    ]
+    datasets: [{ data: [5, 8, 4, 12, 9, 3, 2] }]
 };

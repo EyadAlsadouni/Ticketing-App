@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { MapPin, Calendar, Clock, MessageSquare, Paperclip } from 'lucide-react-native';
+import { MapPin, Calendar, Clock, History, Check } from 'lucide-react-native';
 import { Ticket } from '../types';
 import { useTheme } from '../../../shared/context/ThemeContext';
 import { Card } from '../../../components/ui/Card';
@@ -12,92 +12,131 @@ import { format } from 'date-fns';
 
 interface TicketCardProps {
     ticket: Ticket;
+    selectionMode?: boolean;
+    selected?: boolean;
+    onSelect?: () => void;
+    onLongPress?: () => void;
 }
 
-export function TicketCard({ ticket }: TicketCardProps) {
+export function TicketCard({ ticket, selectionMode, selected, onSelect, onLongPress }: TicketCardProps) {
     const router = useRouter();
     const { colors } = useTheme();
 
-    const handlePress = () => {
-        router.push(`/tickets/${ticket.id}`);
+    const handleCardPress = () => {
+        router.push(`/tickets/${ticket.id}?tab=details`);
     };
 
+    const handleHistoryPress = () => {
+        router.push(`/tickets/${ticket.id}?tab=history`);
+    };
+
+    const getRelevantDate = () => {
+        if (ticket.completedDate) {
+            return { label: 'Completed', date: ticket.completedDate };
+        }
+        if (ticket.suspendedDate) {
+            return { label: 'Suspended', date: ticket.suspendedDate };
+        }
+        if (ticket.startDate) {
+            return { label: 'Started', date: ticket.startDate };
+        }
+        return { label: 'Created', date: ticket.createdAt };
+    };
+
+    const dateInfo = getRelevantDate();
+    const isClosed = ticket.status === 'closed';
+
     return (
-        <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
-            <Card style={styles.card}>
-                {/* Header: ID and Priority */}
-                <View style={styles.header}>
-                    <Text style={[styles.ticketId, { color: colors.mutedForeground }]}>
-                        {ticket.ticketId}
-                    </Text>
-                    <PriorityBadge priority={ticket.priority} />
-                </View>
-
-                {/* Title and Description */}
-                <View style={styles.content}>
-                    <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={2}>
-                        {ticket.title}
-                    </Text>
-                    <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
-                        {ticket.description}
-                    </Text>
-                </View>
-
-                {/* Details Row */}
-                <View style={styles.detailsRow}>
-                    <View style={styles.detailItem}>
-                        <MapPin size={14} color={colors.mutedForeground} />
-                        <Text style={[styles.detailText, { color: colors.mutedForeground }]}>
-                            {ticket.city}
-                        </Text>
+        <TouchableOpacity
+            onPress={selectionMode ? onSelect : handleCardPress}
+            onLongPress={isClosed ? undefined : onLongPress}
+            activeOpacity={0.7}
+            disabled={isClosed && selectionMode} // Disable interaction if closed in selection mode
+        >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {/* Selection Checkbox */}
+                {selectionMode && (
+                    <View style={{ marginRight: 12, marginLeft: 4 }}>
+                        {isClosed ? (
+                            <View style={[styles.checkbox, { borderColor: colors.border, backgroundColor: colors.border }]} />
+                        ) : (
+                            <View style={[
+                                styles.checkbox,
+                                { borderColor: selected ? colors.primary : colors.mutedForeground },
+                                selected && { backgroundColor: colors.primary }
+                            ]}>
+                                {selected && <Check size={14} color="#fff" />}
+                            </View>
+                        )}
                     </View>
-                    <View style={styles.detailItem}>
-                        <Calendar size={14} color={colors.mutedForeground} />
-                        <Text style={[styles.detailText, { color: colors.mutedForeground }]}>
-                            {format(new Date(ticket.createdAt), 'MMM d')}
-                        </Text>
-                    </View>
-                    {ticket.projectName && (
-                        <View style={styles.detailItem}>
-                            <Badge variant="outline" style={styles.projectBadge}>
-                                {ticket.projectName}
-                            </Badge>
+                )}
+
+                <Card style={{ ...styles.card, flex: 1 }}>
+                    <View style={styles.container}>
+                        {/* Left Column: ID & Basic Info */}
+                        <View style={styles.leftCol}>
+                            <Text style={[styles.ticketId, { color: colors.primary }]}>{ticket.ticketId}</Text>
+
+                            {/* Title - Full Width, No Truncation */}
+                            {ticket.title ? (
+                                <Text style={[styles.briefTitle, { color: colors.foreground }]}>
+                                    {ticket.title}
+                                </Text>
+                            ) : null}
                         </View>
-                    )}
-                </View>
 
-                {/* Footer: Status and Meta */}
-                <View style={[styles.footer, { borderTopColor: colors.border }]}>
-                    <StatusBadge status={ticket.status} />
-
-                    <View style={styles.metaContainer}>
-                        {ticket.slaStatus === 'breached' && (
-                            <View style={styles.slaBadge}>
-                                <Clock size={14} color={colors.destructive} />
-                                <Text style={[styles.slaText, { color: colors.destructive }]}>SLA</Text>
+                        {/* Middle Column: Tags & Location */}
+                        <View style={styles.midCol}>
+                            <View style={styles.tagsRow}>
+                                {ticket.type && (
+                                    <Badge variant="outline" style={styles.miniBadge}>{ticket.type}</Badge>
+                                )}
+                                <PriorityBadge priority={ticket.priority} style={styles.miniBadge} />
                             </View>
-                        )}
+                            <Text style={[styles.locationText, { color: colors.foreground }]} numberOfLines={2}>
+                                {ticket.locationDetails || ticket.siteName}
+                            </Text>
+                        </View>
 
-                        {ticket.commentsCount > 0 && (
-                            <View style={styles.iconMeta}>
-                                <MessageSquare size={16} color={colors.mutedForeground} />
-                                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                                    {ticket.commentsCount}
+                        {/* Right Column: Date & Status */}
+                        <View style={styles.rightCol}>
+                            <View style={styles.dateContainer}>
+                                <Text style={[styles.dateLabel, { color: colors.mutedForeground }]}>
+                                    {dateInfo.label} Date
+                                </Text>
+                                <Text style={[styles.dateValue, { color: colors.foreground }]}>
+                                    {format(new Date(dateInfo.date), 'MMM d, h:mm a')}
                                 </Text>
                             </View>
-                        )}
 
-                        {ticket.attachmentsCount > 0 && (
-                            <View style={styles.iconMeta}>
-                                <Paperclip size={16} color={colors.mutedForeground} />
-                                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                                    {ticket.attachmentsCount}
-                                </Text>
+                            {/* Status below Date, Approval below Status */}
+                            <View style={styles.statusContainer}>
+                                <StatusBadge status={ticket.status} style={styles.statusBadge} />
+                                {ticket.approvalStatus && (
+                                    <Badge variant="success" style={styles.statusBadge}>
+                                        {ticket.approvalStatus === 'approved' ? 'Approved' : ticket.approvalStatus}
+                                    </Badge>
+                                )}
                             </View>
-                        )}
+                        </View>
                     </View>
-                </View>
-            </Card>
+
+                    {/* Footer Actions */}
+                    <View style={[styles.footer, { borderTopColor: colors.border }]}>
+                        <View style={styles.footerLeft}>
+                            <Clock size={14} color={colors.mutedForeground} />
+                            <Text style={[styles.delayText, { color: colors.mutedForeground }]}>
+                                {ticket.delayDays} days delay
+                            </Text>
+                        </View>
+
+                        <TouchableOpacity style={styles.historyBtn} onPress={handleHistoryPress}>
+                            <History size={16} color={colors.primary} />
+                            <Text style={[styles.historyText, { color: colors.primary }]}>History</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Card>
+            </View>
         </TouchableOpacity>
     );
 }
@@ -105,85 +144,99 @@ export function TicketCard({ ticket }: TicketCardProps) {
 const styles = StyleSheet.create({
     card: {
         marginBottom: spacing.md,
-        padding: 0, // Override default padding to control layout manually
+        padding: 0,
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    checkbox: {
+        width: 20,
+        height: 20,
+        borderRadius: 4,
+        borderWidth: 2,
         alignItems: 'center',
-        paddingHorizontal: spacing.lg,
-        paddingTop: spacing.lg,
-        paddingBottom: spacing.xs,
+        justifyContent: 'center',
+    },
+    container: {
+        flexDirection: 'row',
+        padding: spacing.md,
+        gap: spacing.sm,
+    },
+    leftCol: {
+        flex: 2,
+        gap: 6,
+    },
+    midCol: {
+        flex: 3,
+        paddingHorizontal: 4,
+        gap: 8,
+    },
+    rightCol: {
+        flex: 3,
+        alignItems: 'flex-end',
+        gap: 2,
     },
     ticketId: {
-        fontSize: fontSize.xs,
+        fontSize: fontSize.sm,
+        fontWeight: 'bold',
+    },
+    briefTitle: {
+        fontSize: fontSize.sm,
         fontWeight: '500',
     },
-    content: {
-        paddingHorizontal: spacing.lg,
-        paddingBottom: spacing.md,
-    },
-    title: {
-        fontSize: fontSize.lg,
-        fontWeight: '600',
-        marginBottom: spacing.xs,
-    },
-    description: {
-        fontSize: fontSize.sm,
-        lineHeight: 20,
-    },
-    detailsRow: {
+    tagsRow: {
         flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: spacing.lg,
-        paddingBottom: spacing.lg,
-        gap: spacing.lg,
-    },
-    detailItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
         gap: 4,
+        flexWrap: 'wrap'
     },
-    detailText: {
+    miniBadge: {
+        paddingVertical: 2,
+        paddingHorizontal: 8,
+        minHeight: 22
+    },
+    locationText: {
         fontSize: fontSize.xs,
+        fontWeight: '500'
     },
-    projectBadge: {
-        paddingVertical: 0,
-        height: 20,
+    dateContainer: {
+        alignItems: 'flex-end'
+    },
+    dateLabel: {
+        fontSize: 10,
+    },
+    dateValue: {
+        fontSize: 10,
+        fontWeight: '600'
+    },
+    statusContainer: {
+        alignItems: 'flex-end',
+        marginTop: 4,
+        gap: 4
+    },
+    statusBadge: {
+        paddingVertical: 4
     },
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: spacing.lg,
-        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
         borderTopWidth: 1,
     },
-    metaContainer: {
+    footerLeft: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: spacing.lg,
+        gap: 4
     },
-    slaBadge: {
+    delayText: {
+        fontSize: fontSize.xs
+    },
+    historyBtn: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 2,
-        backgroundColor: '#FEF2F2',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: borderRadius.sm,
+        padding: 4,
+        gap: 4
     },
-    slaText: {
+    historyText: {
         fontSize: fontSize.xs,
-        fontWeight: '700',
-    },
-    iconMeta: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-    },
-    metaText: {
-        fontSize: fontSize.xs,
-        fontWeight: '500',
-    },
+        fontWeight: '500'
+    }
 });

@@ -178,7 +178,8 @@ export function PriorityBadge({ priority, style }: PriorityBadgeProps) {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: spacing.sm,
-        paddingVertical: spacing.xs,
+        paddingVertical: 4, // Increased padding
+        minHeight: 24, // Minimum height to prevent cutoff
         borderRadius: borderRadius.md,
         alignSelf: 'flex-start',
     },
