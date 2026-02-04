@@ -1,6 +1,6 @@
 // app/(app)/tickets/[id].tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, LayoutAnimation, Platform, UIManager, TextInput, KeyboardAvoidingView, FlatList, Image } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTicketsStore } from '../../../features/tickets/store';
 import { useTheme } from '../../../shared/context/ThemeContext';
@@ -9,10 +9,13 @@ import { Badge, StatusBadge, PriorityBadge } from '../../../components/ui/Badge'
 import {
     MapPin, Calendar, Clock, User, FileText,
     Package, Activity as ActivityIcon, AlertCircle, CheckCircle, X,
-    ChevronDown, ChevronUp, Paperclip, Download, Info, History
+    ChevronDown, ChevronUp, Paperclip, Download, Info, History,
+    MessageSquare, Send, Plus, Camera, Image as ImageIcon, File
 } from 'lucide-react-native';
 import { spacing, fontSize, borderRadius } from '../../../shared/theme';
 import { format } from 'date-fns';
+import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -24,7 +27,7 @@ export default function TicketDetailScreen() {
     const { id, tab } = useLocalSearchParams();
     const router = useRouter();
     const { colors } = useTheme();
-    const { getTicketById, updateTicketStatus } = useTicketsStore();
+    const { getTicketById, updateTicketStatus, addChatMessage, addAttachment } = useTicketsStore();
 
     const [ticket, setTicket] = useState<any>(null);
     const [statusModalVisible, setStatusModalVisible] = useState(false);
@@ -34,9 +37,10 @@ export default function TicketDetailScreen() {
     const [collapsedSections, setCollapsedSections] = useState({
         location: false,
         dates: false,
+        upload: true, // Default to collapsed
     });
 
-    const toggleSection = (key: 'location' | 'dates') => {
+    const toggleSection = (key: 'location' | 'dates' | 'upload') => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setCollapsedSections(prev => ({ ...prev, [key]: !prev[key] }));
     };
@@ -58,6 +62,50 @@ export default function TicketDetailScreen() {
         await updateTicketStatus(ticket.id, newStatus);
         setTicket({ ...ticket, status: newStatus as any });
         setStatusModalVisible(false);
+    };
+
+
+
+    const handlePickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const asset = result.assets[0];
+            await addAttachment(ticket.id, {
+                id: Date.now(),
+                type: 'IMAGE',
+                fileName: asset.fileName || `image_${Date.now()}.jpg`,
+                uploadedDate: new Date().toISOString(),
+                fileSize: asset.mimeType?.split('/')[1].toUpperCase() || 'JPG',
+                uri: asset.uri
+            });
+            setTicket(getTicketById(Number(id)));
+        }
+    };
+
+    const handlePickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: '*/*',
+            copyToCacheDirectory: true,
+        });
+
+        if (!result.canceled) {
+            const asset = result.assets[0];
+            await addAttachment(ticket.id, {
+                id: Date.now(),
+                type: 'FILE',
+                fileName: asset.name,
+                uploadedDate: new Date().toISOString(),
+                fileSize: asset.name.split('.').pop()?.toUpperCase() || 'FILE',
+                uri: asset.uri
+            });
+            setTicket(getTicketById(Number(id)));
+        }
     };
 
     const getStatusOptions = () => [
@@ -87,53 +135,57 @@ export default function TicketDetailScreen() {
     );
 
     return (
-        <>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={100}
+        >
             <Stack.Screen options={{
                 title: isHistoryView ? `Ticket History #${ticket.ticketId}` : `Ticket ${ticket.ticketId}`,
                 headerRight: () => !isHistoryView ? (
-                    <TouchableOpacity
-                        onPress={() => setStatusModalVisible(true)}
-                        style={{ marginRight: 8 }}
-                    >
-                        <Badge variant="default">Change Status</Badge>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <TouchableOpacity
+                            onPress={() => setStatusModalVisible(true)}
+                            style={{ marginRight: 8 }}
+                        >
+                            <Badge variant="default">Change Status</Badge>
+                        </TouchableOpacity>
+                    </View>
                 ) : null
             }} />
 
             <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
 
-                {/* Common Header Card */}
+                {/* Standardized Header Card */}
                 <Card style={styles.headerCard}>
-                    <View style={styles.headerTop}>
-                        <View>
+                    <View style={styles.headerLayout}>
+                        <View style={styles.headerMain}>
                             <Text style={[styles.ticketTitle, { color: colors.foreground }]}>
                                 {ticket.title || 'Untitled Ticket'}
                             </Text>
                             <Text style={[styles.projectName, { color: colors.mutedForeground }]}>
                                 {ticket.projectName}
                             </Text>
-                        </View>
-                        <View style={{ alignItems: 'flex-end', gap: 4 }}>
-                            <StatusBadge status={ticket.status} />
-                            <PriorityBadge priority={ticket.priority} />
-                        </View>
-                    </View>
 
-                    <View style={styles.badgesRow}>
-                        {ticket.type && <Badge variant="secondary">{ticket.type}</Badge>}
-                        <Badge variant={ticket.slaStatus === 'met' ? 'success' : 'destructive'}>
-                            SLA: {ticket.slaStatus === 'met' ? 'MET' : ticket.slaStatus.toUpperCase()}
-                        </Badge>
+                            <View style={styles.headerBadgesRow}>
+                                <StatusBadge status={ticket.status} />
+                                <PriorityBadge priority={ticket.priority} />
+                                {ticket.type && <Badge variant="secondary">{ticket.type}</Badge>}
+                                <Badge variant={ticket.slaStatus === 'met' ? 'success' : 'destructive'}>
+                                    SLA: {ticket.slaStatus === 'met' ? 'MET' : ticket.slaStatus.toUpperCase()}
+                                </Badge>
+                            </View>
+                        </View>
                     </View>
 
                     {ticket.approvalStatus && (
-                        <View style={[styles.approvalBanner, { backgroundColor: ticket.approvalStatus === 'approved' ? '#dcfce7' : '#fee2e2' }]}>
+                        <View style={[styles.approvalBanner, { backgroundColor: ticket.approvalStatus === 'approved' ? 'rgba(22, 101, 52, 0.1)' : 'rgba(153, 27, 27, 0.1)' }]}>
                             {ticket.approvalStatus === 'approved' ? (
-                                <CheckCircle size={16} color="#166534" />
+                                <CheckCircle size={14} color="#166534" />
                             ) : (
-                                <AlertCircle size={16} color="#991b1b" />
+                                <AlertCircle size={14} color="#991b1b" />
                             )}
-                            <Text style={{ color: ticket.approvalStatus === 'approved' ? '#166534' : '#991b1b', fontWeight: '600' }}>
+                            <Text style={[styles.approvalText, { color: ticket.approvalStatus === 'approved' ? '#166534' : '#991b1b' }]}>
                                 Approval: {ticket.approvalStatus.toUpperCase()}
                             </Text>
                         </View>
@@ -182,17 +234,52 @@ export default function TicketDetailScreen() {
                             )}
                         </Card>
 
-                        <Card style={{ marginTop: spacing.md }}>
+                        <Card style={styles.collapsibleCard}>
                             <View style={styles.sectionHeader}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <FileText size={18} color={colors.primary} style={{ marginRight: 8 }} />
                                     <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Description</Text>
                                 </View>
                             </View>
-                            <Text style={{ color: colors.foreground, lineHeight: 22, fontSize: fontSize.base, marginTop: spacing.sm }}>
-                                {ticket.description}
-                            </Text>
+                            <View style={{ marginTop: spacing.sm, paddingLeft: 26 }}>
+                                <Text style={{ color: colors.foreground, lineHeight: 22, fontSize: fontSize.base }}>
+                                    {ticket.description}
+                                </Text>
+                            </View>
                         </Card>
+
+                        {/* Upload Section (Collapsible) */}
+                        <Card style={{ ...styles.collapsibleCard, marginBottom: spacing.xl }}>
+                            <TouchableOpacity style={styles.sectionHeader} onPress={() => toggleSection('upload')}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Plus size={18} color={colors.primary} style={{ marginRight: 8 }} />
+                                    <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Upload</Text>
+                                </View>
+                                {collapsedSections.upload ? <ChevronDown size={20} color={colors.mutedForeground} /> : <ChevronUp size={20} color={colors.mutedForeground} />}
+                            </TouchableOpacity>
+
+                            {!collapsedSections.upload && (
+                                <View style={styles.uploadButtonsRow}>
+                                    <TouchableOpacity style={styles.uploadButton} onPress={handlePickImage}>
+                                        <ImageIcon size={24} color={colors.primary} />
+                                        <Text style={[styles.uploadButtonText, { color: colors.foreground }]}>Gallery</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.uploadButton} onPress={handlePickDocument}>
+                                        <File size={24} color={colors.primary} />
+                                        <Text style={[styles.uploadButtonText, { color: colors.foreground }]}>Files</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </Card>
+
+                        {/* Standalone Chat navigation button at the bottom */}
+                        <TouchableOpacity
+                            style={[styles.bigChatButton, { backgroundColor: colors.primary }]}
+                            onPress={() => router.push(`/(app)/tickets/chat/${id}`)}
+                        >
+                            <MessageSquare size={20} color="#fff" style={{ marginRight: 8 }} />
+                            <Text style={styles.bigChatButtonText}>Open Chat with Manager</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
 
@@ -355,7 +442,7 @@ export default function TicketDetailScreen() {
                     </View>
                 </View>
             </Modal>
-        </>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -387,10 +474,29 @@ const styles = StyleSheet.create({
     approvalBanner: {
         flexDirection: 'row',
         alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 6,
+        marginTop: 12,
+        alignSelf: 'flex-start'
+    },
+    approvalText: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+    },
+    headerLayout: {
+        flexDirection: 'row',
+    },
+    headerMain: {
+        flex: 1,
+    },
+    headerBadgesRow: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         gap: 8,
-        padding: 8,
-        borderRadius: 8,
-        marginTop: 8
+        marginTop: 12,
     },
     section: {
         paddingHorizontal: spacing.md,
@@ -437,6 +543,130 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#f1f1f1',
         marginVertical: 12,
+    },
+    // Communications Styles
+    chatContainer: {
+        marginTop: spacing.md,
+        gap: spacing.sm,
+        maxHeight: 300,
+    },
+    chatBubble: {
+        padding: spacing.sm,
+        borderRadius: 16,
+        maxWidth: '85%',
+    },
+    chatBubbleLeft: {
+        alignSelf: 'flex-start',
+        borderBottomLeftRadius: 4,
+    },
+    chatBubbleRight: {
+        alignSelf: 'flex-end',
+        borderBottomRightRadius: 4,
+    },
+    chatSender: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        marginBottom: 2,
+    },
+    chatText: {
+        fontSize: 14,
+        lineHeight: 18,
+    },
+    chatTime: {
+        fontSize: 9,
+        alignSelf: 'flex-end',
+        marginTop: 2,
+    },
+    chatInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: spacing.md,
+        gap: spacing.sm,
+    },
+    chatInput: {
+        flex: 1,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 1,
+        paddingHorizontal: 16,
+        fontSize: 14,
+    },
+    bigChatButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 14,
+        borderRadius: 12,
+        marginBottom: spacing.xl,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    bigChatButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    // Evidence/Upload Styles
+    uploadButtonsRow: {
+        flexDirection: 'row',
+        gap: spacing.md,
+        marginTop: spacing.md,
+    },
+    uploadButton: {
+        flex: 1,
+        height: 80,
+        borderRadius: 12,
+        backgroundColor: 'rgba(59, 130, 246, 0.05)', // Subtle primary tint
+        borderWidth: 1,
+        borderColor: 'rgba(59, 130, 246, 0.2)',
+        borderStyle: 'dashed',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+    },
+    uploadButtonText: {
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    uploadPreview: {
+        marginRight: 10,
+    },
+    previewImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+    },
+    previewBadge: {
+        position: 'absolute',
+        top: 4,
+        right: 4,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingHorizontal: 4,
+        paddingVertical: 2,
+        borderRadius: 4,
+    },
+    previewBadgeText: {
+        color: '#fff',
+        fontSize: 8,
+        fontWeight: 'bold',
+    },
+    previewFile: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+        backgroundColor: '#f1f5f9',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
+    },
+    previewFileName: {
+        fontSize: 10,
+        color: '#64748b',
+        marginTop: 4,
+        textAlign: 'center',
     },
     // New History Styles
     attachmentCard: {
@@ -509,6 +739,8 @@ const styles = StyleSheet.create({
         color: '#9ca3af',
         fontStyle: 'italic',
         fontSize: 14,
+        textAlign: 'center',
+        marginTop: 10,
     },
     // Activity Timeline Styles
     activityTimeline: {

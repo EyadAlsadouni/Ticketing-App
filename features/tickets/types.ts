@@ -53,6 +53,22 @@ export interface ActivityItem {
     timestamp: string;
 }
 
+export interface Comment {
+    id: number;
+    user: string;
+    text: string;
+    timestamp: string;
+    avatar?: string;
+}
+
+export interface ChatMessage {
+    id: number;
+    sender: string;
+    role: 'engineer' | 'manager' | 'admin';
+    text: string;
+    timestamp: string;
+}
+
 export interface Ticket {
     id: number;
     ticketId: string; // TKT-1234
@@ -104,6 +120,8 @@ export interface Ticket {
     activities?: ActivityItem[];
     dependencies?: TicketDependency[];
     attachments?: Attachment[];
+    comments?: Comment[];
+    chat?: ChatMessage[];
 }
 
 export interface TicketStats {

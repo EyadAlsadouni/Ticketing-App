@@ -27,6 +27,8 @@ interface TicketsState {
     filterByApproval: (status: string | null) => void;
     updateTicketStatus: (id: number, newStatus: string) => Promise<void>;
     bulkUpdateTickets: (ids: number[], updates: Partial<Ticket>) => Promise<void>;
+    addChatMessage: (ticketId: number, message: string, role?: 'engineer' | 'manager' | 'admin') => Promise<void>;
+    addAttachment: (ticketId: number, attachment: any) => Promise<void>;
     getTicketById: (id: number) => Ticket | undefined;
     applyFilters: () => void;
 }
@@ -76,6 +78,7 @@ export const useTicketsStore = create<TicketsState>()(
                                 inventoryConsumed: (existing.inventoryConsumed?.length || 0) > 0 ? existing.inventoryConsumed : mock.inventoryConsumed,
                                 dailyLogs: (existing.dailyLogs?.length || 0) > 0 ? existing.dailyLogs : mock.dailyLogs,
                                 activities: (existing.activities?.length || 0) > 0 ? existing.activities : mock.activities,
+                                chat: (existing.chat?.length || 0) > 0 ? existing.chat : mock.chat,
                             };
                         }
                         return existing;
@@ -195,6 +198,39 @@ export const useTicketsStore = create<TicketsState>()(
 
                 updatedTickets.sort((a, b) => PRIORITY_ORDER[a.priority as string] - PRIORITY_ORDER[b.priority as string]);
 
+                set({ tickets: updatedTickets });
+                get().applyFilters();
+            },
+
+            addChatMessage: async (ticketId, text, role = 'engineer') => {
+                const { tickets } = get();
+                const updatedTickets = tickets.map(t => {
+                    if (t.id === ticketId) {
+                        const newChat = [...(t.chat || [])];
+                        newChat.push({
+                            id: Date.now(),
+                            sender: role === 'engineer' ? (t.assignee?.name || 'Engineer') : 'Manager',
+                            role,
+                            text,
+                            timestamp: new Date().toISOString()
+                        });
+                        return { ...t, chat: newChat };
+                    }
+                    return t;
+                });
+                set({ tickets: updatedTickets });
+                get().applyFilters();
+            },
+
+            addAttachment: async (ticketId, attachment) => {
+                const { tickets } = get();
+                const updatedTickets = tickets.map(t => {
+                    if (t.id === ticketId) {
+                        const newAttachments = [...(t.attachments || []), attachment];
+                        return { ...t, attachments: newAttachments, attachmentsCount: newAttachments.length };
+                    }
+                    return t;
+                });
                 set({ tickets: updatedTickets });
                 get().applyFilters();
             }

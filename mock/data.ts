@@ -44,6 +44,12 @@ export const MOCK_TICKETS: Ticket[] = [
         ],
         activities: [
             { id: 1, type: 'TICKET_CREATED', user: 'Administrator', timestamp: '2026-01-05T08:56:00Z' }
+        ],
+        chat: [
+            { id: 1, sender: 'Manager', role: 'manager', text: 'Ahmed, please update the status once the camera is replaced.', timestamp: '2026-01-05T09:00:00Z' },
+            { id: 2, sender: 'Ahmed Al-Sayed', role: 'engineer', text: 'Sure, I am heading there now.', timestamp: '2026-01-05T09:05:00Z' },
+            { id: 3, sender: 'Ahmed Al-Sayed', role: 'engineer', text: 'I replaced the lens but the focus is still blurry.', timestamp: '2026-01-05T14:30:00Z' },
+            { id: 4, sender: 'Manager', role: 'manager', text: 'Try to recalibrate the software settings first.', timestamp: '2026-01-05T14:35:00Z' }
         ]
     },
     {
@@ -72,7 +78,8 @@ export const MOCK_TICKETS: Ticket[] = [
         dailyLogs: [],
         activities: [
             { id: 1, type: 'TICKET_CREATED', user: 'Omar Farooq', timestamp: '2026-01-20T10:00:00Z' }
-        ]
+        ],
+        chat: []
     },
     {
         id: 3,
@@ -130,6 +137,10 @@ export const MOCK_TICKETS: Ticket[] = [
             { id: 7, type: 'TITLE_CHANGED', from: 'New', to: 'New ticket', user: 'Field Engineer', timestamp: '2026-01-04T09:48:00Z' },
             { id: 8, type: 'ASSIGNEE_CHANGED', from: 'Supervisor', to: 'Field Engineer', user: 'Supervisor', timestamp: '2026-01-04T09:48:00Z' },
             { id: 9, type: 'TITLE_ADDED', to: 'New', user: 'Supervisor', timestamp: '2026-01-04T09:48:00Z' }
+        ],
+        chat: [
+            { id: 1, sender: 'Manager', role: 'manager', text: 'Any update on the sector 4 power outage?', timestamp: '2026-01-04T10:00:00Z' },
+            { id: 2, sender: 'Ahmed Al-Sayed', role: 'engineer', text: 'Checking the main transformer now, seems like a major fault.', timestamp: '2026-01-04T10:05:00Z' }
         ]
     },
     {
@@ -161,7 +172,8 @@ export const MOCK_TICKETS: Ticket[] = [
         dailyLogs: [],
         activities: [
             { id: 1, type: 'STATUS_CHANGED', from: 'Open', to: 'Suspended', user: 'Khalid Al-Ghamdi', timestamp: '2026-01-15T15:00:00Z' }
-        ]
+        ],
+        chat: []
     },
     {
         id: 5,
@@ -218,6 +230,9 @@ export const MOCK_TICKETS: Ticket[] = [
         dependencies: [
             { id: 1, name: 'AC Not Working', remarks: 'aaa', resolved: true },
             { id: 2, name: 'Permit Required', remarks: 'checking', resolved: true }
+        ],
+        chat: [
+            { id: 1, sender: 'Manager', role: 'manager', text: 'Great work on closing this camera issue.', timestamp: '2025-12-25T17:05:00Z' }
         ]
     },
     {
@@ -244,7 +259,8 @@ export const MOCK_TICKETS: Ticket[] = [
         attachmentsCount: 0,
         activities: [
             { id: 1, type: 'TICKET_CREATED', user: 'Noura Al-Saud', timestamp: subtractDays(12) }
-        ]
+        ],
+        chat: []
     }
 ];
 
