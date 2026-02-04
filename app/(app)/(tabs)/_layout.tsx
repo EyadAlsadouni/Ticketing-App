@@ -1,7 +1,7 @@
 // app/(app)/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import { useTheme } from '../../../shared/context/ThemeContext';
-import { LayoutDashboard, Ticket, Package, Users, Menu } from 'lucide-react-native';
+import { LayoutDashboard, Ticket, Package, Calendar, Menu } from 'lucide-react-native';
 
 export default function TabLayout() {
     const { colors, isDark } = useTheme();
@@ -41,20 +41,20 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="logs"
+                options={{
+                    title: 'My Logs',
+                    tabBarIcon: ({ color, size }) => (
+                        <Calendar size={size} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
                 name="inventory"
                 options={{
                     title: 'Inventory',
                     tabBarIcon: ({ color, size }) => (
                         <Package size={size} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="employees"
-                options={{
-                    title: 'Employees',
-                    tabBarIcon: ({ color, size }) => (
-                        <Users size={size} color={color} />
                     ),
                 }}
             />

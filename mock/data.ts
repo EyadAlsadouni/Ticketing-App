@@ -1,5 +1,6 @@
 // mock/data.ts
 import { Ticket } from '../features/tickets/types';
+import { DailyLog, LogOverviewData } from '../features/logs/types';
 
 // Utils
 const now = new Date();
@@ -273,4 +274,125 @@ export const SLA_STATS = [
 export const WEEKLY_PERFORMANCE = {
     labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     datasets: [{ data: [5, 8, 4, 12, 9, 3, 2] }]
+};
+
+export const LOG_PICKLISTS = {
+    activities: [
+        { label: 'TR', value: 'TR' },
+        { label: 'PM', value: 'PM' },
+        { label: 'WF', value: 'WF' },
+        { label: 'Other', value: 'Other' }
+    ],
+    sites: [
+        { label: 'Main road drive up alhassa', value: 'site-1' },
+        { label: 'Al Ashriea Gas Station', value: 'site-2' },
+        { label: 'Alfawzan gas station', value: 'site-3' },
+        { label: 'Petrol gas station 1', value: 'site-4' },
+        { label: 'Hoshani Building', value: 'site-5' },
+        { label: 'Hassani Building', value: 'site-6' }
+    ],
+    tickets: [
+        { label: '2579', value: '2579' },
+        { label: 'AMB-011', value: 'AMB-011' },
+        { label: '2568', value: '2568' },
+        { label: 'AMB-700', value: 'AMB-700' }
+    ]
+};
+
+export const MOCK_LOGS: DailyLog[] = [
+    {
+        id: '1',
+        workDate: '2026-01-04T00:00:00Z',
+        ticketId: '2579',
+        siteId: 'site-1',
+        activityCode: 'TR',
+        startTime: '09:00 AM',
+        endTime: '05:00 PM',
+        remoteVisit: 'No',
+        overtime: '',
+        distance: '',
+        remarks: '',
+        hotelStay: 'No',
+        approvalStatus: 'Approved By Supervisor',
+        approvalRemarks: '',
+        hasAttachment: false
+    },
+    {
+        id: '2',
+        workDate: '2025-12-24T00:00:00Z',
+        ticketId: null,
+        siteId: 'site-2',
+        activityCode: 'Other',
+        startTime: '09:00 AM',
+        endTime: '05:00 PM',
+        remoteVisit: 'No',
+        overtime: '',
+        distance: '',
+        remarks: '',
+        hotelStay: 'No',
+        approvalStatus: 'Approved By Supervisor',
+        approvalRemarks: '',
+        hasAttachment: false
+    },
+    {
+        id: '3',
+        workDate: '2025-12-22T00:00:00Z',
+        ticketId: 'AMB-011',
+        siteId: 'site-3',
+        activityCode: 'PM',
+        startTime: '09:00 AM',
+        endTime: '05:00 PM',
+        remoteVisit: 'No',
+        overtime: '',
+        distance: '',
+        remarks: '',
+        hotelStay: 'No',
+        approvalStatus: 'Approved By Supervisor',
+        approvalRemarks: '',
+        hasAttachment: false
+    },
+    {
+        id: '4',
+        workDate: '2025-12-22T00:00:00Z',
+        ticketId: '2568',
+        siteId: 'site-4',
+        activityCode: 'TR',
+        startTime: '09:00 AM',
+        endTime: '05:00 PM',
+        remoteVisit: 'No',
+        overtime: '',
+        distance: '',
+        remarks: '',
+        hotelStay: 'No',
+        approvalStatus: '',
+        approvalRemarks: '',
+        hasAttachment: false
+    },
+    {
+        id: '5',
+        workDate: '2025-12-21T00:00:00Z',
+        ticketId: 'AMB-700',
+        siteId: 'site-5',
+        activityCode: 'WF',
+        startTime: '10:00 AM',
+        endTime: '02:00 PM',
+        remoteVisit: 'Yes',
+        overtime: '',
+        distance: '',
+        remarks: 'Network setup',
+        hotelStay: 'No',
+        approvalStatus: 'Approved By Administrator',
+        approvalRemarks: 'Looks good',
+        hasAttachment: true,
+        attachmentName: 'network_report.pdf'
+    }
+];
+
+export const MOCK_LOG_OVERVIEW: LogOverviewData = {
+    totalActivities: 8,
+    totalHours: '40h',
+    totalDistance: '0 km',
+    approvedOvertime: '0h',
+    hotelNights: 0,
+    btrEligibleDays: 0
 };
