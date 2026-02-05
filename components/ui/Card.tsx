@@ -1,12 +1,12 @@
 // components/ui/Card.tsx
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Platform } from 'react-native';
+import { View, StyleSheet, ViewStyle, Platform, StyleProp } from 'react-native';
 import { useTheme } from '../../shared/context/ThemeContext';
 import { borderRadius, spacing } from '../../shared/theme';
 
 interface CardProps {
     children: React.ReactNode;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     variant?: 'default' | 'outlined';
 }
 
@@ -51,7 +51,7 @@ export function Card({ children, style, variant = 'default' }: CardProps) {
 
 interface CardHeaderProps {
     children: React.ReactNode;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 export function CardHeader({ children, style }: CardHeaderProps) {
@@ -71,7 +71,7 @@ export function CardHeader({ children, style }: CardHeaderProps) {
 
 interface CardContentProps {
     children: React.ReactNode;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 export function CardContent({ children, style }: CardContentProps) {
@@ -80,7 +80,7 @@ export function CardContent({ children, style }: CardContentProps) {
 
 interface CardFooterProps {
     children: React.ReactNode;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 export function CardFooter({ children, style }: CardFooterProps) {

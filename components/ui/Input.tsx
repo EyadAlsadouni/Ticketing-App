@@ -7,14 +7,17 @@ import {
     StyleSheet,
     TextInputProps,
     ViewStyle,
+    StyleProp,
+    TextStyle,
 } from 'react-native';
 import { useTheme } from '../../shared/context/ThemeContext';
 import { borderRadius, spacing, fontSize } from '../../shared/theme';
 
-interface InputProps extends TextInputProps {
+interface InputProps extends Omit<TextInputProps, 'style'> {
     label?: string;
     error?: string;
-    containerStyle?: ViewStyle;
+    containerStyle?: StyleProp<ViewStyle>;
+    style?: StyleProp<TextStyle>;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
 }
@@ -47,8 +50,8 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {
                                 color: colors.foreground,
                             },
-                            leftIcon && styles.inputWithLeftIcon,
-                            rightIcon && styles.inputWithRightIcon,
+                            leftIcon ? styles.inputWithLeftIcon : null,
+                            rightIcon ? styles.inputWithRightIcon : null,
                             style,
                         ]}
                         placeholderTextColor={colors.mutedForeground}

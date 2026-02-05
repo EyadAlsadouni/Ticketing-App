@@ -1,6 +1,6 @@
 // components/ui/Avatar.tsx
 import React from 'react';
-import { View, Text, Image, StyleSheet, ViewStyle } from 'react-native';
+import { View, Text, Image, StyleSheet, ViewStyle, StyleProp, ImageStyle } from 'react-native';
 import { useTheme } from '../../shared/context/ThemeContext';
 import { borderRadius, fontSize } from '../../shared/theme';
 
@@ -8,7 +8,7 @@ interface AvatarProps {
     source?: { uri: string } | null;
     name?: string;
     size?: 'sm' | 'md' | 'lg' | 'xl';
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle | ImageStyle>;
 }
 
 export function Avatar({ source, name, size = 'md', style }: AvatarProps) {
@@ -64,8 +64,8 @@ export function Avatar({ source, name, size = 'md', style }: AvatarProps) {
                         width: sizeValue,
                         height: sizeValue,
                         borderRadius: sizeValue / 2,
-                    },
-                    style,
+                    } as ImageStyle,
+                    style as StyleProp<ImageStyle>,
                 ]}
             />
         );

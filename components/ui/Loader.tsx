@@ -1,6 +1,6 @@
 // components/ui/Loader.tsx
 import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet, ViewStyle } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet, ViewStyle, StyleProp, DimensionValue } from 'react-native';
 import { useTheme } from '../../shared/context/ThemeContext';
 import { spacing, fontSize } from '../../shared/theme';
 
@@ -8,7 +8,7 @@ interface LoaderProps {
     size?: 'small' | 'large';
     message?: string;
     fullScreen?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 export function Loader({
@@ -48,10 +48,10 @@ export function Loader({
 
 // Skeleton loader component
 interface SkeletonProps {
-    width?: number | string;
-    height?: number;
+    width?: DimensionValue;
+    height?: DimensionValue;
     borderRadius?: number;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 export function Skeleton({
