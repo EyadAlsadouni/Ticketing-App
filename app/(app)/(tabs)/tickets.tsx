@@ -180,7 +180,7 @@ export default function TicketsScreen() {
 
                         <Text style={{ marginBottom: 8, fontWeight: '600', color: colors.foreground }}>New Status</Text>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-                            {['open', 'inProgress', 'suspended', 'pending'].map((status) => (
+                            {['open', 'inProgress', 'suspended', 'pending', 'closed'].map((status) => (
                                 <TouchableOpacity
                                     key={status}
                                     onPress={() => setBulkStatus(status)}

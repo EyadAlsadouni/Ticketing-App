@@ -113,6 +113,7 @@ export default function TicketDetailScreen() {
         { label: 'In Progress', value: 'inProgress' },
         { label: 'Suspended', value: 'suspended' },
         { label: 'Pending for Approval', value: 'pending' },
+        { label: 'Closed', value: 'closed' },
     ];
 
     const InfoRow = ({ icon: Icon, label, value }: any) => (
