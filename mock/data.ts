@@ -1,6 +1,7 @@
 // mock/data.ts
 import { Ticket } from '../features/tickets/types';
 import { DailyLog, LogOverviewData } from '../features/logs/types';
+import { InventoryReturn } from '../features/inventory/types';
 
 // Utils
 const now = new Date();
@@ -396,3 +397,281 @@ export const MOCK_LOG_OVERVIEW: LogOverviewData = {
     hotelNights: 0,
     btrEligibleDays: 0
 };
+export const MOCK_INVENTORY_CATALOG = [
+    { id: '1', code: '01070748', name: '01070748', model: 'NA', vendor: 'Huawei', available: 0 },
+    { id: '2', code: '02113174', name: 'OptiX RTN 950,SL9B1CASE,Assembly Chassis(-48V)', model: 'NA', vendor: 'Huawei', available: 1 },
+    { id: '3', code: '02115040', name: 'Assembly Chassis, AR6300, AR6300 integrated chassis, 2*SRU slot, 4*SIC slot, 2*WSIC slot, 4*XSIC slot, 2*power slot', model: 'NA', vendor: 'Huawei', available: 0 },
+    { id: '4', code: '02131212', name: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', model: 'NA', vendor: 'Huawei', available: 1 },
+    { id: '5', code: '02131554', name: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', model: 'NA', vendor: 'Huawei', available: 2 },
+    { id: '6', code: '03131778', name: 'Fan Module, AR6300', model: 'NA', vendor: 'Huawei', available: 5 },
+    { id: '7', code: '04131889', name: 'Logic Board, SLSW-889', model: 'NA', vendor: 'Huawei', available: 10 },
+    { id: '8', code: '05131990', name: 'Optical Module, 10G-SFP+', model: 'NA', vendor: 'Huawei', available: 3 },
+];
+
+export const MOCK_DROPDOWN_DATA = {
+    roles: ['Field Engineer', 'Supervisor', 'Operations Manager', 'Logistics Supervisor'],
+    users: ['John Doe', 'Ahmed Ali', 'Sarah Smith', 'Michael Chen'],
+    regions: ['Central', 'Eastern', 'Western', 'Northern', 'Southern'],
+    locations: ['Riyadh Main Office', 'Jeddah Site A', 'Dammam Hub', 'Medina Station'],
+    tickets: ['TKT-2025001', 'TKT-2025002', 'TKT-2025003', 'TKT-2025004'],
+    projects: ['Arab National Bank', 'STC Expansion', 'Huawei Core Upgrade'],
+};
+
+export const MOCK_INVENTORY_RELEASE = [
+    {
+        id: '1',
+        requestNumber: 'REQ-20260105091043-36',
+        itemCode: '02131664',
+        itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN',
+        model: 'NA',
+        vendor: 'Huawei',
+        category: '-',
+        subCategory: '-',
+        barcode: '122025-00824',
+        issued: 1,
+        remarks: '-',
+        status: 'Accept'
+    },
+    {
+        id: '2',
+        requestNumber: 'REQ-20260105091043-36',
+        itemCode: '02131664',
+        itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN',
+        model: 'NA',
+        vendor: 'Huawei',
+        category: '-',
+        subCategory: '-',
+        barcode: '122025-00823',
+        issued: 1,
+        remarks: '-',
+        status: 'Accept'
+    },
+    {
+        id: '3',
+        requestNumber: 'REQ-20260105091043-36',
+        itemCode: '02131664',
+        itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN',
+        model: 'NA',
+        vendor: 'Huawei',
+        category: '-',
+        subCategory: '-',
+        barcode: '122025-00822',
+        issued: 1,
+        remarks: '-',
+        status: 'Released'
+    },
+    {
+        id: '4',
+        requestNumber: 'REQ-20260105091043-36',
+        itemCode: '02131664',
+        itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN',
+        model: 'NA',
+        vendor: 'Huawei',
+        category: '-',
+        subCategory: '-',
+        barcode: '122025-00821',
+        issued: 1,
+        remarks: '-',
+        status: 'Released'
+    },
+    {
+        id: '5',
+        requestNumber: 'REQ-20260105091043-36',
+        itemCode: '02131664',
+        itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN',
+        model: 'NA',
+        vendor: 'Huawei',
+        category: '-',
+        subCategory: '-',
+        barcode: '122025-00816',
+        issued: 1,
+        remarks: '-',
+        status: 'Pending'
+    }
+];
+
+export const MOCK_INVENTORY_RETURNS: InventoryReturn[] = [
+    {
+        id: '1',
+        returnNumber: 'RET-20260208084713-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Return',
+        created: '08 Feb 2026 11:47',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri1', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '2',
+        returnNumber: 'RET-20260208073956-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Pending',
+        created: '08 Feb 2026 10:39',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri2', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Pending', remarks: '-' }
+        ]
+    },
+    {
+        id: '3',
+        returnNumber: 'RET-20260205125405-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'supervisor\nSupervisor',
+        status: 'Return',
+        created: '05 Feb 2026 15:54',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri3', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '4',
+        returnNumber: 'RET-20260111102530-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Return',
+        created: '11 Jan 2026 13:25',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri4', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '5',
+        returnNumber: 'RET-20260111102148-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Return',
+        created: '11 Jan 2026 13:21',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri5', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '6',
+        returnNumber: 'RET-20260111100345-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Return',
+        created: '11 Jan 2026 13:03',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri6', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '7',
+        returnNumber: 'RET-20260104113731-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'supervisor\nSupervisor',
+        status: 'Return',
+        created: '04 Jan 2026 14:37',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri7', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '8',
+        returnNumber: 'RET-20260104094223-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'supervisor\nSupervisor',
+        status: 'Return',
+        created: '04 Jan 2026 12:42',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri8', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '9',
+        returnNumber: 'RET-20260104094146-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'logisticssupervisor\nLogistics Supervisor',
+        status: 'Return',
+        created: '04 Jan 2026 12:41',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri9', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    },
+    {
+        id: '10',
+        returnNumber: 'RET-20251222214704-36',
+        requestedBy: 'fieldengineer',
+        requestedTo: 'supervisor\nSupervisor',
+        status: 'Return',
+        created: '23 Dec 2025 00:47',
+        itemCount: 1,
+        remarks: '-',
+        items: [
+            { id: 'ri10', itemCode: '02131664', itemName: 'AC-DC Power,-40degC,70degC,90V,290V,12.2V/5A,PAC60S12-AN', quantity: 1, issued: 1, status: 'Return', remarks: '-' }
+        ]
+    }
+];
+
+export const MOCK_INVENTORY_REQUESTS = [
+    {
+        id: '1',
+        requestNumber: 'REQ-20251222232941-36',
+        requestedTo: 'operationsmanager',
+        requestedBy: 'fieldengineer',
+        requestedOn: 'December 23, 2025',
+        status: 'Accept',
+        approvedAt: 'December 22, 2025',
+        items: [
+            { id: 'i1', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 0, status: 'Accept', remarks: '' }
+        ]
+    },
+    {
+        id: '2',
+        requestNumber: 'REQ-20251222233012-36',
+        requestedTo: 'supervisor',
+        requestedBy: 'fieldengineer',
+        requestedOn: 'December 23, 2025',
+        status: 'Accept',
+        approvedAt: 'December 22, 2025',
+        items: [
+            { id: 'i2', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 0, status: 'Accept', remarks: '' }
+        ]
+    },
+    {
+        id: '3',
+        requestNumber: 'REQ-20251222233033-36',
+        requestedTo: 'supervisor',
+        requestedBy: 'fieldengineer',
+        requestedOn: 'December 23, 2025',
+        status: 'Released',
+        approvedAt: 'December 22, 2025',
+        items: [
+            { id: 'i3', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 0, status: 'Released', remarks: '' },
+            { id: 'i4', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 0, status: 'Accept', remarks: '' },
+            { id: 'i5', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 1, status: 'Return', remarks: '' }
+        ]
+    },
+    {
+        id: '4',
+        requestNumber: 'REQ-20260202105945-36',
+        requestedTo: 'supervisor',
+        requestedBy: 'fieldengineer',
+        requestedOn: 'February 2, 2026',
+        status: 'Out of Stock',
+        items: [
+            { id: 'i6', itemCode: '02113174', itemName: 'OptiX RTN 950,SL9B1CASE,Assembly Chassis(-48V)', quantity: 1, issued: 0, status: 'Out of Stock', remarks: '' },
+            { id: 'i7', itemCode: '02131212', itemName: 'AC-DC Power,-25degC,60degC,90V,290V,12V/29.2', quantity: 1, issued: 0, status: 'Out of Stock', remarks: '' }
+        ]
+    }
+];

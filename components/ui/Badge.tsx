@@ -1,22 +1,22 @@
-// components/ui/Badge.tsx
-import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, TextStyle, StyleProp } from 'react-native';
 import { useTheme } from '../../shared/context/ThemeContext';
 import { borderRadius, spacing, fontSize } from '../../shared/theme';
 import { statusColors, priorityColors } from '../../shared/theme/colors';
 
-type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning';
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' | 'info';
 
 interface BadgeProps {
     children: React.ReactNode;
     variant?: BadgeVariant;
-    style?: ViewStyle;
+    size?: 'xs' | 'sm' | 'md' | 'lg';
+    style?: StyleProp<ViewStyle>;
     textStyle?: TextStyle;
 }
 
 export function Badge({
     children,
     variant = 'default',
+    size = 'md',
     style,
     textStyle,
 }: BadgeProps) {
@@ -75,6 +75,16 @@ export function Badge({
                         color: colors.warning,
                     },
                 };
+            case 'info':
+                return {
+                    container: {
+                        backgroundColor: '#E0F2FE', // Light blue/info
+                        borderColor: 'transparent',
+                    },
+                    text: {
+                        color: '#0369A1', // Dark blue/info
+                    },
+                };
             default:
                 return {
                     container: {
@@ -90,9 +100,36 @@ export function Badge({
 
     const variantStyles = getVariantStyles();
 
+    const getSizeStyles = () => {
+        switch (size) {
+            case 'xs':
+                return {
+                    container: { paddingHorizontal: 4, paddingVertical: 1, minHeight: 16 },
+                    text: { fontSize: 8 },
+                };
+            case 'sm':
+                return {
+                    container: { paddingHorizontal: 6, paddingVertical: 2, minHeight: 20 },
+                    text: { fontSize: 10 },
+                };
+            case 'lg':
+                return {
+                    container: { paddingHorizontal: 12, paddingVertical: 6, minHeight: 32 },
+                    text: { fontSize: fontSize.sm },
+                };
+            default:
+                return {
+                    container: { paddingHorizontal: spacing.sm, paddingVertical: 4, minHeight: 24 },
+                    text: { fontSize: fontSize.xs },
+                };
+        }
+    };
+
+    const sizeStyles = getSizeStyles();
+
     return (
-        <View style={[styles.container, variantStyles.container, style]}>
-            <Text style={[styles.text, variantStyles.text, textStyle]}>
+        <View style={[styles.container, variantStyles.container, sizeStyles.container, style]}>
+            <Text style={[styles.text, variantStyles.text, sizeStyles.text, textStyle]}>
                 {children}
             </Text>
         </View>
